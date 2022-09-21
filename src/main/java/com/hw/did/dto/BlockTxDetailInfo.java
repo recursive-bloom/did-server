@@ -30,15 +30,3 @@ public class BlockTxDetailInfo implements Serializable {
     private String type;
 }
 
-@Data
-class Logs{
-    private String address;
-    private List<String> topics;
-    private String data;
-    private String blockNumber;
-    private String transactionHash;
-    private String transactionIndex;
-    private String blockHash;
-    private String logIndex;
-    private boolean removed;
-}

@@ -1,6 +1,7 @@
 package com.hw.did.task;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -10,9 +11,12 @@ import com.hw.did.config.BlockConfig;
 import com.hw.did.constant.SysConfigConstant;
 import com.hw.did.dto.BlockTxDetailInfo;
 import com.hw.did.dto.BlockTxInfo;
+import com.hw.did.dto.Logs;
+import com.hw.did.service.FunctionEventParseService;
 import com.hw.did.service.SysConfigService;
 import com.hw.did.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -59,7 +63,9 @@ public class SyncEventTask implements CommandLineRunner {
 
             // step4 获取监控的目标地址
             List<String> monitorContractAddressList = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MOTITOR_CONTRACT_ADDRESS_KEY))
-                    .map(str -> JSONUtil.toList(str, String.class)).orElse(null);
+                    .map(String::toLowerCase)
+                    .map(str -> JSONUtil.toList(str, String.class))
+                    .orElse(null);
             if (CollectionUtil.isEmpty(monitorContractAddressList)) {
                 log.error("[SyncEventTask#asyncHandleTask] 监控的合约地址为空");
                 sleep(TimeUnit.MINUTES, 1);
@@ -126,9 +132,39 @@ public class SyncEventTask implements CommandLineRunner {
             filterTxDataByMonitorAddress(blockTxInfoList, monitorContractAddressList);
 
             List<BlockTxDetailInfo> blockTxDetailInfoList = obtainBlockTxDetailInfoByHash(blockTxInfoList);
-            System.out.println(blockTxDetailInfoList);
+            encodeDataAndInsertDatabase(blockTxDetailInfoList);
             System.out.println(1);
         }
+    }
+
+    /**
+     * 解码 topic和datad的数据，并将数据保存到数据库
+     *
+     * @param blockTxDetailInfoList
+     */
+    private void encodeDataAndInsertDatabase(List<BlockTxDetailInfo> blockTxDetailInfoList) {
+        if (CollectionUtil.isEmpty(blockTxDetailInfoList)) {
+            return;
+        }
+
+        blockTxDetailInfoList.forEach(blockTxDetailInfo -> {
+            if (Objects.isNull(blockTxDetailInfo)) {
+                return;
+            }
+
+            final String topic0 = Optional.of(blockTxDetailInfo)
+                    .map(BlockTxDetailInfo::getLogs)
+                    .map(list -> list.get(0))
+                    .map(Logs::getTopics)
+                    .map(topicList -> topicList.get(0))
+                    .orElse(null);
+
+            final FunctionEventParseService functionEventParseService = SpringUtil.getBean("functionEventParseReverseService", FunctionEventParseService.class);
+            functionEventParseService.eventParse(blockTxDetailInfo);
+
+        });
+
+
     }
 
 
@@ -194,7 +230,7 @@ public class SyncEventTask implements CommandLineRunner {
         if (CollectionUtil.isEmpty(blockTxInfoList) || CollectionUtil.isEmpty(monitorContractAddressList)) {
             return;
         }
-        blockTxInfoList.removeIf(blockTxInfo -> !monitorContractAddressList.contains(blockTxInfo.getTo()));
+        blockTxInfoList.removeIf(blockTxInfo -> StringUtils.isBlank(blockTxInfo.getTo()) || !monitorContractAddressList.contains(blockTxInfo.getTo().toLowerCase()));
 
     }
 
@@ -226,6 +262,9 @@ public class SyncEventTask implements CommandLineRunner {
                         final JSONObject jsonObject = jsonArray.getJSONObject(i);
                         final String hash = jsonObject.getStr("hash");
                         final String to = jsonObject.getStr("to");
+                        if (StringUtils.isBlank(to)) {
+                            System.out.println(to);
+                        }
                         final BlockTxInfo blockTxInfo = new BlockTxInfo();
                         blockTxInfo.setHash(hash);
                         blockTxInfo.setTo(to);

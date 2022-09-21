@@ -9,9 +9,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.hw.did.config.BlockConfig;
 import com.hw.did.constant.SysConfigConstant;
-import com.hw.did.dto.BlockTxDetailInfo;
 import com.hw.did.dto.BlockTxInfo;
-import com.hw.did.dto.Logs;
 import com.hw.did.service.FunctionEventParseService;
 import com.hw.did.service.SysConfigService;
 import com.hw.did.utils.HttpUtils;
@@ -20,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.web3j.protocol.core.methods.response.Log;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -131,8 +131,8 @@ public class SyncEventTask implements CommandLineRunner {
 
             filterTxDataByMonitorAddress(blockTxInfoList, monitorContractAddressList);
 
-            List<BlockTxDetailInfo> blockTxDetailInfoList = obtainBlockTxDetailInfoByHash(blockTxInfoList);
-            encodeDataAndInsertDatabase(blockTxDetailInfoList);
+            List<TransactionReceipt> transactionReceiptList = obtainBlockTxDetailInfoByHash(blockTxInfoList);
+            encodeDataAndInsertDatabase(transactionReceiptList);
             System.out.println(1);
         }
     }
@@ -142,25 +142,25 @@ public class SyncEventTask implements CommandLineRunner {
      *
      * @param blockTxDetailInfoList
      */
-    private void encodeDataAndInsertDatabase(List<BlockTxDetailInfo> blockTxDetailInfoList) {
-        if (CollectionUtil.isEmpty(blockTxDetailInfoList)) {
+    private void encodeDataAndInsertDatabase(List<TransactionReceipt> transactionReceiptList) {
+        if (CollectionUtil.isEmpty(transactionReceiptList)) {
             return;
         }
 
-        blockTxDetailInfoList.forEach(blockTxDetailInfo -> {
-            if (Objects.isNull(blockTxDetailInfo)) {
+        transactionReceiptList.forEach(transactionReceipt -> {
+            if (Objects.isNull(transactionReceipt)) {
                 return;
             }
 
-            final String topic0 = Optional.of(blockTxDetailInfo)
-                    .map(BlockTxDetailInfo::getLogs)
+            final String topic0 = Optional.of(transactionReceipt)
+                    .map(TransactionReceipt::getLogs)
                     .map(list -> list.get(0))
-                    .map(Logs::getTopics)
+                    .map(Log::getTopics)
                     .map(topicList -> topicList.get(0))
                     .orElse(null);
 
             final FunctionEventParseService functionEventParseService = SpringUtil.getBean("functionEventParseReverseService", FunctionEventParseService.class);
-            functionEventParseService.eventParse(blockTxDetailInfo);
+            functionEventParseService.eventParse(transactionReceipt);
 
         });
 
@@ -174,21 +174,21 @@ public class SyncEventTask implements CommandLineRunner {
      * @param blockTxInfoList
      * @return
      */
-    private List<BlockTxDetailInfo> obtainBlockTxDetailInfoByHash(List<BlockTxInfo> blockTxInfoList) {
+    private List<TransactionReceipt> obtainBlockTxDetailInfoByHash(List<BlockTxInfo> blockTxInfoList) {
         if (CollectionUtil.isEmpty(blockTxInfoList)) {
             return null;
         }
 
-        List<BlockTxDetailInfo> blockTxDetailInfoList = Lists.newArrayList();
+        List<TransactionReceipt> blockTxDetailInfoList = Lists.newArrayList();
         blockTxInfoList.forEach(blockTxInfo -> {
             String txDetailResultStr = obtainTxDetailFromRemote(blockTxInfo);
 
-            BlockTxDetailInfo blockTxDetailInfo = parseTxDetailResultStr(txDetailResultStr);
-            if (Objects.isNull(blockTxDetailInfo)) {
+            TransactionReceipt transactionReceipt = parseTxDetailResultStr(txDetailResultStr);
+            if (Objects.isNull(transactionReceipt)) {
                 return;
             }
 
-            blockTxDetailInfoList.add(blockTxDetailInfo);
+            blockTxDetailInfoList.add(transactionReceipt);
         });
         return blockTxDetailInfoList;
     }
@@ -199,14 +199,14 @@ public class SyncEventTask implements CommandLineRunner {
      * @param txDetailResultStr
      * @return
      */
-    private BlockTxDetailInfo parseTxDetailResultStr(String txDetailResultStr) {
-        BlockTxDetailInfo blockTxDetailInfo = Optional.ofNullable(txDetailResultStr)
+    private TransactionReceipt parseTxDetailResultStr(String txDetailResultStr) {
+        TransactionReceipt transactionReceipt = Optional.ofNullable(txDetailResultStr)
                 .map(JSONUtil::parseObj)
                 .map(jsonObj -> jsonObj.getStr("result"))
-                .map(str -> JSONUtil.toBean(str, BlockTxDetailInfo.class))
+                .map(str -> JSONUtil.toBean(str, TransactionReceipt.class))
                 .orElse(null);
 
-        return blockTxDetailInfo;
+        return transactionReceipt;
     }
 
 
@@ -263,7 +263,8 @@ public class SyncEventTask implements CommandLineRunner {
                         final String hash = jsonObject.getStr("hash");
                         final String to = jsonObject.getStr("to");
                         if (StringUtils.isBlank(to)) {
-                            System.out.println(to);
+                            // 目标地址是合约的时候，to变量是null
+                            continue;
                         }
                         final BlockTxInfo blockTxInfo = new BlockTxInfo();
                         blockTxInfo.setHash(hash);

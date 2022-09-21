@@ -1,12 +1,15 @@
 package com.hw.did.service.impl;
 
 import com.hw.did.abi.Abi;
-import com.hw.did.dto.BlockTxDetailInfo;
-import com.hw.did.dto.Logs;
 import com.hw.did.service.FunctionEventParseService;
 import org.springframework.stereotype.Service;
-import org.web3j.abi.TypeDecoder;
-import org.web3j.abi.TypeReference;
+import org.web3j.abi.EventValues;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.protocol.core.methods.response.Log;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tx.Contract;
+
+import java.util.List;
 
 /**
  * @Author leyangjie
@@ -17,33 +20,14 @@ import org.web3j.abi.TypeReference;
 public class FunctionEventParseReverseService implements FunctionEventParseService {
 
     @Override
-    public void eventParse(BlockTxDetailInfo blockTxDetailInfo) {
-        final Logs logList = blockTxDetailInfo.getLogs().get(0);
+    public void eventParse(TransactionReceipt transactionReceipt) {
+        Log log = transactionReceipt.getLogs().get(0);
+        final EventValues eventValues = Contract.staticExtractEventParameters(Abi.NODEINFOUPDATED_EVENT, log);
+        final List<Type> indexedValues = eventValues.getIndexedValues();
+        final Type type = indexedValues.get(1);
+        System.out.println(type.getValue().toString());
 
-        final String mainAddress = logList.getTopics().get(1);
-        final String node = logList.getTopics().get(2);
-
-  /*      final Type type = FunctionReturnDecoder.decodeIndexedValue(mainAddress, new TypeReference<Address>() {
-        });
-        System.out.println(type.getValue());
-        System.out.println(1);*/
-
-  /*   final Address address = TypeDecoder.decodeStaticStruct(mainAddress.substring(64),0, new TypeReference<Address>() {
-        });*/
-
-        final String data = logList.getData();
-
-
-        final Abi.Node node1 = TypeDecoder.decodeStaticStruct(data, 0, new TypeReference<Abi.Node>() {
-        });
-
-        System.out.println(node1);
-
-
-//        final String data = blockTxDetailInfo.getLogs().get(0).getData();
-
-
-        System.out.println();
+        System.out.println(1);
     }
 
 

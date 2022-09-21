@@ -1,6 +1,6 @@
 package com.hw.did.service;
 
-import com.hw.did.dto.BlockTxDetailInfo;
+import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 /**
  * @Author leyangjie
@@ -12,7 +12,7 @@ public interface FunctionEventParseService {
     /**
      * 事件数据解析
      */
-    void eventParse(BlockTxDetailInfo blockTxDetailInfo);
+    void eventParse(TransactionReceipt transactionReceipt);
 
     /**
      * 数据插入

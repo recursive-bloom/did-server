@@ -25,6 +25,11 @@ https://ethereum.org/en/developers/docs/storage
 
 
 ```text
+
+web3j generate solidity -a abi.json -o web3j-test -p com
+
+web3j generate solidity -b code.bin -a abi.json -o web3j-test -p com
+ 
 目标地址（比如5合约地址）
 
 [startBlockNumber]

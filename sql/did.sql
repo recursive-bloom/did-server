@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `did_node`;
 CREATE TABLE `did_node` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键id',
   `node` char(66) NOT NULL COMMENT 'did编号',
-  `parent` char(66) DEFAULT NULL COMMENT '父did编号',
+  `parent_node` char(66) DEFAULT NULL COMMENT '父did编号',
   `owner` char(42) DEFAULT NULL COMMENT '地址',
   `expire` bigint(20) DEFAULT NULL COMMENT '过期时间',
   `ttl` bigint(20) DEFAULT NULL COMMENT 'Time to live',
@@ -34,6 +34,10 @@ CREATE TABLE `did_node` (
   UNIQUE KEY `uniq_node` (`node`) USING BTREE,
   KEY `index_owner` (`owner`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='did_node 记录表';
+
+
+
+
 
 -- ----------------------------
 -- Records of did_node

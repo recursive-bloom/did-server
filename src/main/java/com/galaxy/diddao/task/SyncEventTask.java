@@ -45,8 +45,12 @@ public class SyncEventTask implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Executors.newFixedThreadPool(1)
-                .execute(this::asyncHandleTask);
+        boolean flag = true;
+        if (flag) {
+            Executors.newFixedThreadPool(1)
+                    .execute(this::asyncHandleTask);
+        }
+
 
     }
 
@@ -54,6 +58,7 @@ public class SyncEventTask implements CommandLineRunner {
         for (; ; ) {
             // step1 获取当前处理的块高度
             Integer monitorBlockHeight = Optional.ofNullable(sysConfigService.getValue(SysConfigConstant.MONITOR_BLOCK_HEIGHT_KEY))
+                    .map(str -> StringUtils.remove(str, "0x"))
                     .map(Integer::parseInt).orElse(0);
 
             // step2 获取设置的区块阈值
@@ -129,14 +134,18 @@ public class SyncEventTask implements CommandLineRunner {
                             Integer curMaxBlockHeight, List<String> monitorContractAddressList) {
 
         while (monitorBlockHeight + blockHeightThreshold <= curMaxBlockHeight) {
+            log.info("开始扫块，块高度为：{}", monitorBlockHeight);
             List<BlockTxInfo> blockTxInfoList = obtainBlockDataByBlockhHeightFromRemote(monitorBlockHeight);
 
             filterTxDataByMonitorAddress(blockTxInfoList, monitorContractAddressList);
 
             List<TransactionReceipt> transactionReceiptList = obtainBlockTxDetailInfoByHash(blockTxInfoList);
             encodeDataAndInsertDatabase(transactionReceiptList);
-            System.out.println(1);
+            monitorBlockHeight++;
         }
+
+        // 更新块高
+        sysConfigService.update(SysConfigConstant.MONITOR_BLOCK_HEIGHT_KEY, monitorBlockHeight.toString());
     }
 
     /**
@@ -163,8 +172,11 @@ public class SyncEventTask implements CommandLineRunner {
 
             final FunctionEventParseService functionEventParseService = getParseServiceByTopic0(topic0);
             Assert.notNull(functionEventParseService, "未找到对应的event事件解析类");
-            functionEventParseService.eventParse(transactionReceipt);
 
+            final Object eventDataObj = functionEventParseService.eventParse(transactionReceipt);
+
+            // 保存或修改数据
+            functionEventParseService.insertOrUpdateData(eventDataObj);
         });
 
     }

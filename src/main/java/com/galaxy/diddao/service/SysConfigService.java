@@ -20,4 +20,12 @@ public interface SysConfigService {
      * @return
      */
     String getCacheValue(String configKey);
+
+    /**
+     * 根据key修改value值
+     *
+     * @param key
+     * @param value
+     */
+    void update(String key, String value);
 }

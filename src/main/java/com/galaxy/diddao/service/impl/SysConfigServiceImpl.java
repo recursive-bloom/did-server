@@ -2,6 +2,7 @@ package com.galaxy.diddao.service.impl;
 
 import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.galaxy.diddao.constant.RedisCacheKey;
 import com.galaxy.diddao.entity.SysConfig;
@@ -53,5 +54,15 @@ public class SysConfigServiceImpl implements SysConfigService {
         final String value = getValue(configKey);
         stringRedisTemplate.opsForValue().set(redisCacheKey,value,3, TimeUnit.MINUTES);
         return value;
+    }
+
+    @Override
+    public void update(String key, String value) {
+        final LambdaUpdateWrapper<SysConfig> updateWrapper = Wrappers.<SysConfig>lambdaUpdate()
+                .eq(SysConfig::getConfigKey, key);
+
+        SysConfig entity = new SysConfig();
+        entity.setConfigValue(value);
+        sysConfigMapper.update(entity, updateWrapper);
     }
 }

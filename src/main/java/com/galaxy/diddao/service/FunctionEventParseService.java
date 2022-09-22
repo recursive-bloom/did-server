@@ -7,15 +7,15 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
  * @Date 2022/9/20 18:10
  * @Description:
  */
-public interface FunctionEventParseService {
+public interface FunctionEventParseService<T> {
 
     /**
      * 事件数据解析
      */
-    void eventParse(TransactionReceipt transactionReceipt);
+    T eventParse(TransactionReceipt transactionReceipt);
 
     /**
      * 数据插入
      */
-    void insertData();
+    void insertOrUpdateData(T t);
 }

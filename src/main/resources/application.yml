@@ -14,4 +14,7 @@ block:
     host: https://ethereum-ropsten-rpc.allthatnode.com
 
 jsonrpc:
-    id: 83
+  id: 83
+
+server:
+  port: 80

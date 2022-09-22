@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-public class BlockConfig {
+public class ChainConfig {
 
     @Value("${block.req.host}")
     private String blockReqHost;
 
-    @Value(("${block.id}"))
-    private String blockId;
+    @Value(("${jsonrpc.id}"))
+    private String jsonRpcId;
 
 }

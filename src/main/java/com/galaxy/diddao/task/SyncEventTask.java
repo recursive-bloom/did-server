@@ -5,7 +5,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.galaxy.diddao.config.BlockConfig;
+import com.galaxy.diddao.config.ChainConfig;
 import com.galaxy.diddao.constant.SysConfigConstant;
 import com.galaxy.diddao.dto.BlockTxInfo;
 import com.galaxy.diddao.service.FunctionEventParseService;
@@ -39,7 +39,7 @@ public class SyncEventTask implements CommandLineRunner {
     private SysConfigService sysConfigService;
 
     @Autowired
-    private BlockConfig blockConfig;
+    private ChainConfig chainConfig;
 
     @Override
     public void run(String... args) throws Exception {
@@ -62,7 +62,7 @@ public class SyncEventTask implements CommandLineRunner {
             Integer curMaxBlockHeight = obtainCurMaxBlockHeightForRemote();
 
             // step4 获取监控的目标地址
-            List<String> monitorContractAddressList = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MOTITOR_CONTRACT_ADDRESS_KEY))
+            List<String> monitorContractAddressList = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MONITOR_CONTRACT_ADDRESS_KEY))
                     .map(String::toLowerCase)
                     .map(str -> JSONUtil.toList(str, String.class))
                     .orElse(null);
@@ -103,10 +103,10 @@ public class SyncEventTask implements CommandLineRunner {
         paramMap.put("jsonrpc", "2.0");
         paramMap.put("method", "eth_blockNumber");
         paramMap.put("params", Lists.newArrayList());
-        paramMap.put("id", blockConfig.getBlockId());
+        paramMap.put("id", chainConfig.getJsonRpcId());
 
         // resultStr 结果格式如下： {"jsonrpc":"2.0","id":"83","result":"0xc6638d"}
-        final String resultStr = HttpUtils.postJson(blockConfig.getBlockReqHost(),
+        final String resultStr = HttpUtils.postJson(chainConfig.getBlockReqHost(),
                 JSONUtil.toJsonStr(paramMap));
 
         final Integer curMaxBlockHeight = Optional.ofNullable(resultStr).map(JSONUtil::parseObj)
@@ -216,7 +216,7 @@ public class SyncEventTask implements CommandLineRunner {
         paramMap.put("method", "eth_getTransactionReceipt");
         paramMap.put("params", Collections.singleton(blockTxInfo.getHash()));
         paramMap.put("id", 1);
-        String txDetailResultStr = HttpUtils.postJson(blockConfig.getBlockReqHost(), JSONUtil.toJsonStr(paramMap));
+        String txDetailResultStr = HttpUtils.postJson(chainConfig.getBlockReqHost(), JSONUtil.toJsonStr(paramMap));
         return txDetailResultStr;
     }
 
@@ -250,7 +250,7 @@ public class SyncEventTask implements CommandLineRunner {
         paramMap.put("params", paramList);
         paramMap.put("id", "1");
 
-        String blockDataResultStr = HttpUtils.postJson(blockConfig.getBlockReqHost(), JSONUtil.toJsonStr(paramMap));
+        String blockDataResultStr = HttpUtils.postJson(chainConfig.getBlockReqHost(), JSONUtil.toJsonStr(paramMap));
 
         List<BlockTxInfo> txInfoList = Optional.ofNullable(blockDataResultStr)
                 .map(JSONUtil::parseObj)

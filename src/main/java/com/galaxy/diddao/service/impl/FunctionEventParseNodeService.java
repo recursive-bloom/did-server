@@ -27,8 +27,8 @@ public class FunctionEventParseNodeService implements FunctionEventParseService 
         final EventValues eventValues = Contract.staticExtractEventParameters(Abi.NODEINFOUPDATED_EVENT, log);
         final List<Type> topics = eventValues.getIndexedValues();
         final List<Type> datas = eventValues.getNonIndexedValues();
-        // event结构:
-        //  event NodeInfoUpdated(bytes32 indexed node, bytes32 parent, address owner, uint64 expire, uint64 ttl, uint64 transfer, string name);
+
+        // event NodeInfoUpdated(bytes32 indexed node, bytes32 parent, address owner, uint64 expire, uint64 ttl, uint64 transfer, string name);
         // step1 解析topic
         final String node = Numeric.toHexString((byte[]) topics.get(0).getValue());
 

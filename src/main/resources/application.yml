@@ -8,9 +8,10 @@ spring:
   redis:
     host: localhost
 
-
-# 区块链地址
+# json-rpc server config
 block:
   req:
     host: https://ethereum-ropsten-rpc.allthatnode.com
-  id: 83
+
+jsonrpc:
+    id: 83

@@ -8,8 +8,8 @@
         <version>2.7.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.hw</groupId>
-    <artifactId>did</artifactId>
+    <groupId>com.galaxy</groupId>
+    <artifactId>diddao</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>did</name>
     <description>Demo project for Spring Boot</description>
@@ -98,7 +98,7 @@
         <dependency>
             <groupId>org.web3j</groupId>
             <artifactId>core</artifactId>
-            <version>4.8.7</version>
+            <version>4.8.2</version>
         </dependency>
     </dependencies>
 

@@ -29,6 +29,7 @@ public class FunctionEventParseReverseService implements FunctionEventParseServi
 
         final EventValues eventValues = Contract.staticExtractEventParameters(Abi.REVERSERECORDSET_EVENT, log);
         final List<Type> indexedValues = eventValues.getIndexedValues();
+        // event ReverseRecordSet(address indexed main_address, bytes32 indexed node);
         String mainAddress = indexedValues.get(0).getValue().toString();
         byte[] nodeBytes = (byte[]) indexedValues.get(1).getValue();
         final String node = Numeric.toHexString(nodeBytes);
@@ -45,6 +46,5 @@ public class FunctionEventParseReverseService implements FunctionEventParseServi
 
     public static void main(String[] args) throws IOException {
         Web3j web3 = Web3j.build(new HttpService("https://ethereum-ropsten-rpc.allthatnode.com"));
-
     }
 }

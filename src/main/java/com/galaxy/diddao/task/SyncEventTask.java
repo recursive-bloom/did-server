@@ -1,6 +1,8 @@
 package com.galaxy.diddao.task;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.TypeReference;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -159,14 +161,41 @@ public class SyncEventTask implements CommandLineRunner {
                     .map(topicList -> topicList.get(0))
                     .orElse(null);
 
-            final FunctionEventParseService functionEventParseService = SpringUtil.getBean("functionEventParseNodeService", FunctionEventParseService.class);
+            final FunctionEventParseService functionEventParseService = getParseServiceByTopic0(topic0);
+            Assert.notNull(functionEventParseService, "未找到对应的event事件解析类");
             functionEventParseService.eventParse(transactionReceipt);
 
         });
 
-
     }
 
+    /**
+     * 根据topic0找到解析的service
+     *
+     * @param topic0
+     * @return
+     */
+    private FunctionEventParseService getParseServiceByTopic0(String topic0) {
+        if (StringUtils.isBlank(topic0)) {
+            return null;
+        }
+
+        List<Map<String, String>> mapList = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MONITOR_EVENT_PARSE_KEY))
+                .map(str -> JSONUtil.toBean(str, new TypeReference<List<Map<String, String>>>() {
+                }, true)).orElse(null);
+
+        if (CollectionUtil.isEmpty(mapList)) {
+            return null;
+        }
+
+        for (Map<String, String> map : mapList) {
+            final String serverNameStr = map.get(topic0);
+            if (StringUtils.isNotBlank(serverNameStr)) {
+                return SpringUtil.getBean(serverNameStr, FunctionEventParseService.class);
+            }
+        }
+        return null;
+    }
 
     /**
      * 根据交易hash获取交易的详细信息
@@ -285,4 +314,5 @@ public class SyncEventTask implements CommandLineRunner {
 
         System.out.println(result);
     }
+
 }

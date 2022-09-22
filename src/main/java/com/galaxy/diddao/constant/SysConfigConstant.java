@@ -21,4 +21,9 @@ public interface SysConfigConstant {
      * 监控安全区块（Finality）阈值
      */
     String MONITOR_BLOCK_THRESHOLD_KEY = "monitor_block_threshold";
+
+    /**
+     * 方法签名和对应的解析处理类
+     */
+    String MONITOR_EVENT_PARSE_KEY = "monitor_event_parse_key";
 }

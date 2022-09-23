@@ -5,7 +5,7 @@ import com.galaxy.diddao.entity.SysConfig;
 import org.springframework.stereotype.Repository;
 
 /**
- * @Author leyangjie
+ * @Author Ant
  * @Date 2022/9/17 15:39
  * @Description:
  */

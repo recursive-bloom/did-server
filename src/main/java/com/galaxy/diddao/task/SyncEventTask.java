@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Author leyangjie
+ * @Author Ant
  * @Date 2022/9/17 11:14
  * @Description: 同步event事件并解析数据，写入到mysql数据库
  */

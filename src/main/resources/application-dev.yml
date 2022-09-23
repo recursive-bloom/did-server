@@ -20,5 +20,3 @@ block:
 jsonrpc:
   id: 83
 
-server:
-  port: 81

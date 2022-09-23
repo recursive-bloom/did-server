@@ -45,7 +45,7 @@ public class SyncEventTask implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        boolean flag = true;
+        boolean flag = false;
         if (flag) {
             Executors.newFixedThreadPool(1)
                     .execute(this::asyncHandleTask);

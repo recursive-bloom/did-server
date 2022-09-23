@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/did?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&allowPublicKeyRetrieval=true&verifyServerCertificate=false&useSSL=false
+    username: root
+    password: Root@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-test-query: SELECT 1
+      minimum-idle: 10
+      maximum-pool-size: 30
+
+
+  redis:
+    host: localhost
+    password: Wnt39H23AA
+
+# json-rpc server config
+block:
+  req:
+    host: https://ethereum-ropsten-rpc.allthatnode.com
+
+jsonrpc:
+  id: 83
+
+server:
+  port: 80

@@ -1,5 +1,8 @@
 package com.galaxy.diddao.utils;
 
+import com.galaxy.diddao.constant.CommonConstants;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang3.StringUtils;
 import org.web3j.crypto.ECDSASignature;
 import org.web3j.crypto.Hash;
 import org.web3j.crypto.Keys;
@@ -8,6 +11,7 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author Ant
@@ -17,6 +21,10 @@ import java.util.Arrays;
 public class SignUtils {
 
     public static final String PERSONAL_MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
+    /**
+     * node签名前缀
+     */
+    public static final String SIGN_NODE_PREFIX = "Get latest divident for DID node: ";
 
     /**
      * 根据签名和签名信息获取地址
@@ -25,14 +33,11 @@ public class SignUtils {
      * @param message   签名信息
      * @return
      */
-    public static String getRecoverAddressFromSignature(String signature, String message) {
-
-//        String signature =
-//                "0x2c6401216c9031b9a6fb8cbfccab4fcec6c951cdf40e2320108d1856eb532250576865fbcd452bcdc4c57321b619ed7a9cfd38bd973c3e1e0243ac2777fe9d5b1b";
-
-        String address = "0x31b26e43651e9371c88af3d36c14cfd938baf4fd";
-//        String message = "v0G9u7huK4mJb2K1";
-
+    public static List<String> getRecoverAddressFromSignature(String signature, String message, String signPrefix) {
+        if (StringUtils.isNotBlank(signPrefix)) {
+            message = StringUtils.join(signPrefix, message);
+        }
+        List<String> resultList = Lists.newArrayList();
         String prefix = PERSONAL_MESSAGE_PREFIX + message.length();
         byte[] msgHash = Hash.sha3((prefix + message).getBytes());
 
@@ -61,12 +66,11 @@ public class SignUtils {
                             msgHash);
 
             if (publicKey != null) {
-                addressRecovered = "0x" + Keys.getAddress(publicKey);
-
-                return addressRecovered;
+                addressRecovered = CommonConstants.ADDRESS_PREFIX + Keys.getAddress(publicKey);
+                resultList.add(StringUtils.remove(addressRecovered, SIGN_NODE_PREFIX));
             }
         }
-        return null;
+        return resultList;
     }
 
     public static void main(String[] args) {
@@ -76,8 +80,8 @@ public class SignUtils {
 
         String address = "0x31b26e43651e9371c88af3d36c14cfd938baf4fd";
 
-        System.out.println(getRecoverAddressFromSignature(signature, message));
-        System.out.println(address.equals(getRecoverAddressFromSignature(signature, message)));
+//        System.out.println(getRecoverAddressFromSignature(signature, message));
+//        System.out.println(address.equals(getRecoverAddressFromSignature(signature, message)));
 
     }
 

@@ -42,7 +42,7 @@ public class R<T> implements Serializable {
 
     @Getter
     @Setter
-    private String msg;
+    private String message;
 
     @Getter
     @Setter
@@ -72,15 +72,15 @@ public class R<T> implements Serializable {
         return restResult(data, CommonConstants.FAIL, null);
     }
 
-    public static <T> R<T> failed(T data, String msg) {
-        return restResult(data, CommonConstants.FAIL, msg);
+    public static <T> R<T> failed(String msg, Integer code) {
+        return restResult(null, code, msg);
     }
 
     public static <T> R<T> restResult(T data, int code, String msg) {
         R<T> apiResult = new R<>();
         apiResult.setCode(code);
         apiResult.setData(data);
-        apiResult.setMsg(msg);
+        apiResult.setMessage(msg);
         return apiResult;
     }
 

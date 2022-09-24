@@ -8,6 +8,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.galaxy.diddao.config.ChainConfig;
+import com.galaxy.diddao.constant.CommonConstants;
 import com.galaxy.diddao.constant.SysConfigConstant;
 import com.galaxy.diddao.dto.BlockTxInfo;
 import com.galaxy.diddao.service.FunctionEventParseService;
@@ -58,7 +59,7 @@ public class SyncEventTask implements CommandLineRunner {
         for (; ; ) {
             // step1 获取当前处理的块高度
             Integer monitorBlockHeight = Optional.ofNullable(sysConfigService.getValue(SysConfigConstant.MONITOR_BLOCK_HEIGHT_KEY))
-                    .map(str -> StringUtils.remove(str, "0x"))
+                    .map(str -> StringUtils.remove(str, CommonConstants.ADDRESS_PREFIX))
                     .map(Integer::parseInt).orElse(0);
 
             // step2 获取设置的区块阈值
@@ -286,7 +287,7 @@ public class SyncEventTask implements CommandLineRunner {
         paramMap.put("method", "eth_getBlockByNumber");
         List<Object> paramList = Lists.newArrayList();
         // 区块高度:0x开头的16进制,例如: 0xc67021
-        paramList.add("0x" + Integer.toHexString(monitorBlockHeight));
+        paramList.add(CommonConstants.ADDRESS_PREFIX + Integer.toHexString(monitorBlockHeight));
         paramList.add(Boolean.TRUE);
         paramMap.put("params", paramList);
         paramMap.put("id", "1");

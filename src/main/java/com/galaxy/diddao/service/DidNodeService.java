@@ -1,6 +1,8 @@
 package com.galaxy.diddao.service;
 
+import com.galaxy.diddao.req.LatestDividentReq;
 import com.galaxy.diddao.resp.DidNodeResp;
+import com.galaxy.diddao.resp.LatestDividentResp;
 
 import java.util.List;
 
@@ -11,4 +13,6 @@ import java.util.List;
  */
 public interface DidNodeService {
     List<DidNodeResp> getDidNodeListByAddress(String owner);
+
+    LatestDividentResp getLatestDivident(LatestDividentReq req);
 }

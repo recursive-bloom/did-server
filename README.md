@@ -58,7 +58,7 @@ curl https://ethereum-ropsten-rpc.allthatnode.com --request POST --header "Conte
 ```
 didDao服务启动命令
 ```aidl
-java -jar -Dspring.profiles.active=prod -Xms1g -Xmx1g -XX:+UseConcMarkSweepGC -XX:+UseParNewGC   diddao-0.0.1-SNAPSHOT.jar & 
+nohup java -jar -Dspring.profiles.active=prod -Xms1g -Xmx1g -XX:+UseConcMarkSweepGC -XX:+UseParNewGC   diddao-0.0.1-SNAPSHOT.jar > detail.log 2>&1 &
 ```
 
 web3j学习demo

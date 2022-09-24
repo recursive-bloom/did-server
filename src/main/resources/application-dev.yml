@@ -20,3 +20,6 @@ block:
 jsonrpc:
   id: 83
 
+# 合约地址
+contract:
+  address: "0x395ea9d37595508cd8c1c3b307f7bb97298fe982"

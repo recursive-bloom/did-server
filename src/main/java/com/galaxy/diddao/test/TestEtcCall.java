@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class TestEtcCall {
     public static void main(String[] args) {
+//
         String reqUrl = "https://ethereum-ropsten-rpc.allthatnode.com";
         Map<String, Object> paramMap = Maps.newHashMap();
         paramMap.put("jsonrpc", "2.0");
@@ -28,7 +29,7 @@ public class TestEtcCall {
 
         List<Object> paramList = Lists.newArrayList();
         Map<String, Object> secondParamMap = Maps.newHashMap();
-        secondParamMap.put("to", "0x8b3a11Bf55c1b73Dbce6686540de94eD5E789509");
+        secondParamMap.put("to", "0x395ea9d37595508cd8c1c3b307f7bb97298fe982");
         secondParamMap.put("data", "0x6ab87f2375774ec3a979d857b1fb14d04907aa30e515f6f75124bde3a8e3ef9aefbf07cb");
         paramList.add(secondParamMap);
         paramList.add("latest");
@@ -39,7 +40,6 @@ public class TestEtcCall {
         final String resultStr = HttpUtils.postJson(reqUrl, JSONUtil.toJsonStr(paramMap));
         System.out.println(JSONUtil.toJsonStr(paramMap));
         System.out.println(resultStr);
-
 
     }
 

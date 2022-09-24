@@ -22,3 +22,6 @@ block:
 jsonrpc:
   id: 83
 
+# 合约地址
+contract:
+  address: 123

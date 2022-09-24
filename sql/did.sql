@@ -76,6 +76,25 @@ CREATE TABLE `sys_config` (
   UNIQUE KEY `uniq_config_key` (`config_key`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
+
+CREATE TABLE `divident` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键id',
+  `node` char(66) NOT NULL COMMENT 'did编号',
+  `owner` char(42) DEFAULT NULL COMMENT '地址',
+  `user_signature` char(67) DEFAULT NULL COMMENT '用户签名',
+  `time` bigint(20) DEFAULT NULL COMMENT '打卡申请时间',
+  `gas` varchar(42) DEFAULT NULL COMMENT 'gas数量',
+  `value` varchar(255) DEFAULT NULL COMMENT '分红额度',
+  `platform_signature` char(67) DEFAULT NULL COMMENT '平台签名',
+  `platform_address` char(42) DEFAULT NULL COMMENT '平台签名地址',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `index_node` (`node`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='divident分红表';
+
+
+
 -- ----------------------------
 -- Records of sys_config
 -- ----------------------------

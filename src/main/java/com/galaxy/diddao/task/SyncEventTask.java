@@ -1,7 +1,6 @@
 package com.galaxy.diddao.task;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.extra.spring.SpringUtil;
 import cn.hutool.json.JSONArray;
@@ -46,7 +45,7 @@ public class SyncEventTask implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        boolean flag = false;
+        boolean flag = true;
         if (flag) {
             Executors.newFixedThreadPool(1)
                     .execute(this::asyncHandleTask);
@@ -172,7 +171,10 @@ public class SyncEventTask implements CommandLineRunner {
                     .orElse(null);
 
             final FunctionEventParseService functionEventParseService = getParseServiceByTopic0(topic0);
-            Assert.notNull(functionEventParseService, "未找到对应的event事件解析类");
+            if (Objects.isNull(functionEventParseService)) {
+                log.error("未找到对应的event事件解析类,topic0:{}", topic0);
+                return;
+            }
 
             final Object eventDataObj = functionEventParseService.eventParse(transactionReceipt);
 

@@ -1,8 +1,11 @@
 package com.galaxy.diddao.exception;
 
 
+import lombok.Data;
+
 import java.io.Serializable;
 
+@Data
 public class BizException extends RuntimeException implements Serializable {
 
 
@@ -10,7 +13,7 @@ public class BizException extends RuntimeException implements Serializable {
 
     private static final Integer ERROR_CODE = 500;
 
-    private String errorMsg;
+    private String message;
 
     private Integer code;
 
@@ -20,10 +23,8 @@ public class BizException extends RuntimeException implements Serializable {
     }
 
 
-    public BizException(String errorMsg, Integer code) {
-        this.errorMsg = errorMsg;
+    public BizException(String message, Integer code) {
+        this.message = message;
         this.code = code;
     }
-
-
 }

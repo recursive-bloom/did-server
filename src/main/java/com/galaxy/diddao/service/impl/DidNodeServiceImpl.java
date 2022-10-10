@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.galaxy.diddao.config.ChainConfig;
 import com.galaxy.diddao.entity.DidNode;
+import com.galaxy.diddao.entity.Divident;
 import com.galaxy.diddao.entity.ReverseRecord;
 import com.galaxy.diddao.exception.BizException;
 import com.galaxy.diddao.mapper.DidNodeMapper;
+import com.galaxy.diddao.mapper.DividentMapper;
 import com.galaxy.diddao.mapper.ReverseRecordMapper;
 import com.galaxy.diddao.req.LatestDividentReq;
 import com.galaxy.diddao.resp.DidNodeResp;
@@ -46,6 +48,9 @@ public class DidNodeServiceImpl implements DidNodeService {
 
     @Autowired
     private ReverseRecordMapper reverseRecordMapper;
+
+    @Autowired
+    private DividentMapper dividentMapper;
 
     @Value("${contract.address}")
     private String contractAddress;
@@ -94,6 +99,10 @@ public class DidNodeServiceImpl implements DidNodeService {
         }
 
         String gasBalance = reqEthCall(req.getNode());
+        if (StringUtils.isBlank(gasBalance)) {
+            // 默认设置0.1ETH
+            gasBalance = "100000000000000000";
+        }
 
         LatestDividentResp resp = new LatestDividentResp();
         resp.setNode(didNode.getNode());
@@ -102,8 +111,23 @@ public class DidNodeServiceImpl implements DidNodeService {
         resp.setDivident(gasBalance);
         resp.setGasBalance(gasBalance);
 
-        final long time = System.currentTimeMillis() / (24 * 60 * 60);
+        final long time = (System.currentTimeMillis() / 1000 / (24 * 60 * 60)) - 1;
         resp.setTime(String.valueOf(time));
+
+        // 保存分红表
+        Divident divident = new Divident();
+        divident.setNode(req.getNode());
+        divident.setOwner(didNode.getOwner());
+        divident.setUserSignature(req.getSignature());
+        divident.setTime(System.currentTimeMillis() / 1000 + "");
+        divident.setGas(resp.getGasBalance());
+        divident.setGas(resp.getDivident());
+        divident.setPlatformSignature(resp.getSignature());
+        divident.setPlatformAddress("123");
+        dividentMapper.insert(divident);
+
+
+
         return resp;
     }
 

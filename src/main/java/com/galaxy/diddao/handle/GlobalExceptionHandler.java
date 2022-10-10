@@ -1,5 +1,6 @@
 package com.galaxy.diddao.handle;
 
+import com.galaxy.diddao.exception.BizException;
 import com.galaxy.diddao.utils.R;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,10 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     public R<?> defaultExceptionHandler(HttpServletRequest req, Throwable ex) {
+        if (ex instanceof BizException) {
+            BizException bizException = (BizException) ex;
+            return R.failed(bizException.getMessage(), bizException.getCode());
+        }
         return R.failed(ex.getMessage());
     }
 }

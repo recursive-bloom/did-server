@@ -1,7 +1,7 @@
 package com.galaxy.diddao.service;
 
+import com.galaxy.diddao.dto.MyTransactionReceipt;
 import com.galaxy.diddao.entity.TxBase;
-import com.galaxy.diddao.resp.MyTransactionReceipt;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 /**

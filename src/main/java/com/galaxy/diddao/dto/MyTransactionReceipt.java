@@ -1,4 +1,4 @@
-package com.galaxy.diddao.resp;
+package com.galaxy.diddao.dto;
 
 import lombok.Data;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;

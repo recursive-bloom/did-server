@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Description:
  */
 @Data
-public class DidNode implements Serializable {
+public class DidNode extends TxBase implements Serializable {
 
     private static final long serialVersionUID = 781238059146136052L;
 
@@ -32,4 +32,6 @@ public class DidNode implements Serializable {
     private Long transfer;
 
     private String name;
+
+
 }

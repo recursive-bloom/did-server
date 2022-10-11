@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @Description:
  */
 @Data
-public class ReverseRecord implements Serializable {
+public class DidReverse extends TxBase implements Serializable {
 
     private static final long serialVersionUID = -5902161760738370835L;
 

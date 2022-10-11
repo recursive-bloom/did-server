@@ -15,11 +15,11 @@ spring:
 # json-rpc server config
 block:
   req:
-    host: https://ethereum-ropsten-rpc.allthatnode.com
+    host: https://eth-goerli.g.alchemy.com/v2/-s1zkDpkEmnjF4wIk8pLsiJBuxWelYV0
 
 jsonrpc:
   id: 83
 
 # 合约地址
 contract:
-  address: "0x395ea9d37595508cd8c1c3b307f7bb97298fe982"
+  address: "0x6cC0cAd18cd71bD63D505B864643F8E81b893ecD"

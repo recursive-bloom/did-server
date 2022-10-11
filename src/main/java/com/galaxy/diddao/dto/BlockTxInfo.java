@@ -22,4 +22,9 @@ public class BlockTxInfo implements Serializable {
      * 目的地址
      */
     private String to;
+
+    /**
+     * 时间戳
+     */
+    private Long timestamp;
 }

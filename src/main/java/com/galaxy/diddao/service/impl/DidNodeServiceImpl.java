@@ -8,12 +8,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.galaxy.diddao.config.ChainConfig;
 import com.galaxy.diddao.entity.DidNode;
+import com.galaxy.diddao.entity.DidReverse;
 import com.galaxy.diddao.entity.Divident;
-import com.galaxy.diddao.entity.ReverseRecord;
 import com.galaxy.diddao.exception.BizException;
 import com.galaxy.diddao.mapper.DidNodeMapper;
+import com.galaxy.diddao.mapper.DidReverseMapper;
 import com.galaxy.diddao.mapper.DividentMapper;
-import com.galaxy.diddao.mapper.ReverseRecordMapper;
 import com.galaxy.diddao.req.LatestDividentReq;
 import com.galaxy.diddao.resp.DidNodeResp;
 import com.galaxy.diddao.resp.LatestDividentResp;
@@ -47,7 +47,7 @@ public class DidNodeServiceImpl implements DidNodeService {
     private DidNodeMapper didNodeMapper;
 
     @Autowired
-    private ReverseRecordMapper reverseRecordMapper;
+    private DidReverseMapper didReverseMapper;
 
     @Autowired
     private DividentMapper dividentMapper;
@@ -70,11 +70,11 @@ public class DidNodeServiceImpl implements DidNodeService {
         final List<DidNodeResp> didNodeRespList = BeanUtil.copyToList(didNodeList, DidNodeResp.class);
 
         // 设置默认did
-        final LambdaQueryWrapper<ReverseRecord> reverseRecordQuery = Wrappers.<ReverseRecord>lambdaQuery().eq(ReverseRecord::getOwner, owner);
-        final ReverseRecord reverseRecord = reverseRecordMapper.selectOne(reverseRecordQuery);
-        if (Objects.nonNull(reverseRecord)) {
+        final LambdaQueryWrapper<DidReverse> reverseRecordQuery = Wrappers.<DidReverse>lambdaQuery().eq(DidReverse::getOwner, owner);
+        final DidReverse didReverse = didReverseMapper.selectOne(reverseRecordQuery);
+        if (Objects.nonNull(didReverse)) {
             for (DidNodeResp didNodeResp : didNodeRespList) {
-                if (StringUtils.equals(didNodeResp.getNode(), reverseRecord.getNode())) {
+                if (StringUtils.equals(didNodeResp.getNode(), didReverse.getNode())) {
                     didNodeResp.setIsDefaultDidNode(Boolean.TRUE);
                     break;
                 }

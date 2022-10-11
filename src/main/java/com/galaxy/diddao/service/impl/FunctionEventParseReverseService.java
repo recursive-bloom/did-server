@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.galaxy.diddao.abi.Abi;
-import com.galaxy.diddao.entity.ReverseRecord;
-import com.galaxy.diddao.mapper.ReverseRecordMapper;
+import com.galaxy.diddao.entity.DidReverse;
+import com.galaxy.diddao.mapper.DidReverseMapper;
 import com.galaxy.diddao.service.FunctionEventParseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,13 +28,13 @@ import java.util.Objects;
  * @Description:
  */
 @Service
-public class FunctionEventParseReverseService implements FunctionEventParseService<ReverseRecord> {
+public class FunctionEventParseReverseService implements FunctionEventParseService<DidReverse> {
 
     @Autowired
-    private ReverseRecordMapper reverseRecordMapper;
+    private DidReverseMapper didReverseMapper;
 
     @Override
-    public ReverseRecord eventParse(TransactionReceipt transactionReceipt) {
+    public DidReverse eventParse(TransactionReceipt transactionReceipt) {
         Log log = transactionReceipt.getLogs().get(0);
 
         final EventValues eventValues = Contract.staticExtractEventParameters(Abi.REVERSERECORDSET_EVENT, log);
@@ -44,27 +44,28 @@ public class FunctionEventParseReverseService implements FunctionEventParseServi
         byte[] nodeBytes = (byte[]) indexedValues.get(1).getValue();
         final String node = Numeric.toHexString(nodeBytes);
 
-        ReverseRecord reverseRecord = new ReverseRecord();
-        reverseRecord.setNode(node);
-        reverseRecord.setOwner(mainAddress);
+        DidReverse didReverse = new DidReverse();
+        didReverse.setNode(node);
+        didReverse.setOwner(mainAddress);
+        setTxBasicProperties(transactionReceipt, didReverse);
 
-        return reverseRecord;
+        return didReverse;
     }
 
     @Override
-    public void insertOrUpdateData(ReverseRecord reverseRecord) {
-        final LambdaQueryWrapper<ReverseRecord> queryWrapper = Wrappers.<ReverseRecord>lambdaQuery()
-                .eq(ReverseRecord::getOwner, reverseRecord.getOwner());
-        if (Objects.nonNull(reverseRecordMapper.selectOne(queryWrapper))) {
+    public void insertOrUpdateData(DidReverse didReverse) {
+        final LambdaQueryWrapper<DidReverse> queryWrapper = Wrappers.<DidReverse>lambdaQuery()
+                .eq(DidReverse::getOwner, didReverse.getOwner());
+        if (Objects.nonNull(didReverseMapper.selectOne(queryWrapper))) {
             // 修改
-            final LambdaUpdateWrapper<ReverseRecord> updateWrapper = Wrappers.<ReverseRecord>lambdaUpdate()
-                    .eq(ReverseRecord::getOwner, reverseRecord.getOwner());
-            reverseRecordMapper.update(reverseRecord, updateWrapper);
+            final LambdaUpdateWrapper<DidReverse> updateWrapper = Wrappers.<DidReverse>lambdaUpdate()
+                    .eq(DidReverse::getOwner, didReverse.getOwner());
+            didReverseMapper.update(didReverse, updateWrapper);
             return;
         }
 
         // 新增
-        reverseRecordMapper.insert(reverseRecord);
+        didReverseMapper.insert(didReverse);
     }
 
     public static void main(String[] args) throws IOException {

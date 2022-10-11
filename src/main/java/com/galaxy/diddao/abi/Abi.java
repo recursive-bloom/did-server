@@ -85,6 +85,22 @@ public class Abi extends Contract {
             }));
     ;
 
+    public static final Event PLATFORMINCOME_EVENT = new Event("PlatformIncome",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Address>(true) {
+            }, new TypeReference<Uint256>() {
+            }, new TypeReference<Uint256>() {
+            }));
+    ;
+
+    public static final Event USERDIVIDENT_EVENT = new Event("UserDivident",
+            Arrays.<TypeReference<?>>asList(new TypeReference<Bytes32>(true) {
+            }, new TypeReference<Address>(true) {
+            }, new TypeReference<Uint256>() {
+            }, new TypeReference<Uint256>() {
+            }));
+    ;
+
+
     @Deprecated
     protected Abi(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);

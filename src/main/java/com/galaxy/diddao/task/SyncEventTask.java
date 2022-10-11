@@ -10,6 +10,8 @@ import com.galaxy.diddao.config.ChainConfig;
 import com.galaxy.diddao.constant.CommonConstants;
 import com.galaxy.diddao.constant.SysConfigConstant;
 import com.galaxy.diddao.dto.BlockTxInfo;
+import com.galaxy.diddao.entity.TxBase;
+import com.galaxy.diddao.resp.MyTransactionReceipt;
 import com.galaxy.diddao.service.FunctionEventParseService;
 import com.galaxy.diddao.service.SysConfigService;
 import com.galaxy.diddao.utils.HttpUtils;
@@ -163,23 +165,22 @@ public class SyncEventTask implements CommandLineRunner {
                 return;
             }
 
-            final String topic0 = Optional.of(transactionReceipt)
+            String topic0 = Optional.of(transactionReceipt)
                     .map(TransactionReceipt::getLogs)
                     .map(list -> list.get(0))
                     .map(Log::getTopics)
                     .map(topicList -> topicList.get(0))
                     .orElse(null);
-
             final FunctionEventParseService functionEventParseService = getParseServiceByTopic0(topic0);
             if (Objects.isNull(functionEventParseService)) {
                 log.error("未找到对应的event事件解析类,topic0:{}", topic0);
                 return;
             }
 
-            final Object eventDataObj = functionEventParseService.eventParse(transactionReceipt);
+            final TxBase txBase = functionEventParseService.eventParse(transactionReceipt);
 
             // 保存或修改数据
-            functionEventParseService.insertOrUpdateData(eventDataObj);
+            functionEventParseService.insertOrUpdateData(txBase);
         });
 
     }
@@ -227,10 +228,13 @@ public class SyncEventTask implements CommandLineRunner {
         blockTxInfoList.forEach(blockTxInfo -> {
             String txDetailResultStr = obtainTxDetailFromRemote(blockTxInfo);
 
-            TransactionReceipt transactionReceipt = parseTxDetailResultStr(txDetailResultStr);
+
+            MyTransactionReceipt transactionReceipt = (MyTransactionReceipt) parseTxDetailResultStr(txDetailResultStr);
             if (Objects.isNull(transactionReceipt)) {
                 return;
             }
+            // 设置时间戳
+            transactionReceipt.setTimestamp(blockTxInfo.getTimestamp());
 
             blockTxDetailInfoList.add(transactionReceipt);
         });
@@ -247,7 +251,7 @@ public class SyncEventTask implements CommandLineRunner {
         TransactionReceipt transactionReceipt = Optional.ofNullable(txDetailResultStr)
                 .map(JSONUtil::parseObj)
                 .map(jsonObj -> jsonObj.getStr("result"))
-                .map(str -> JSONUtil.toBean(str, TransactionReceipt.class))
+                .map(str -> JSONUtil.toBean(str, MyTransactionReceipt.class))
                 .orElse(null);
 
         return transactionReceipt;
@@ -306,6 +310,7 @@ public class SyncEventTask implements CommandLineRunner {
                         final JSONObject jsonObject = jsonArray.getJSONObject(i);
                         final String hash = jsonObject.getStr("hash");
                         final String to = jsonObject.getStr("to");
+                        long timestamp = Long.parseLong(jsonObj.getStr("timestamp").substring(2), 16);
                         if (StringUtils.isBlank(to)) {
                             // 目标地址是合约的时候，to变量是null
                             continue;
@@ -313,6 +318,7 @@ public class SyncEventTask implements CommandLineRunner {
                         final BlockTxInfo blockTxInfo = new BlockTxInfo();
                         blockTxInfo.setHash(hash);
                         blockTxInfo.setTo(to);
+                        blockTxInfo.setTimestamp(timestamp);
                         blockTxInfoList.add(blockTxInfo);
                     }
                     return blockTxInfoList;

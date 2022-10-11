@@ -60,6 +60,9 @@ public class FunctionEventParseNodeService implements FunctionEventParseService<
         didNode.setTransfer(transfer);
         didNode.setName(name);
 
+        // 设置基本属性
+        setTxBasicProperties(transactionReceipt, didNode);
+
         return didNode;
     }
 

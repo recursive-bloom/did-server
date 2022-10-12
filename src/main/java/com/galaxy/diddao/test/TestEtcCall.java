@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class TestEtcCall {
     public static void main(String[] args) {
-//
-        String reqUrl = "https://ethereum-ropsten-rpc.allthatnode.com";
+
+        String reqUrl = "https://eth-goerli.g.alchemy.com/v2/-s1zkDpkEmnjF4wIk8pLsiJBuxWelYV0";
         Map<String, Object> paramMap = Maps.newHashMap();
         paramMap.put("jsonrpc", "2.0");
         paramMap.put("method", "eth_call");

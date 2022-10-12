@@ -13,7 +13,7 @@ public class Web3jTest {
 
 
     public static void main(String[] args) throws Exception {
-        String reqUrl = "https://ethereum-ropsten-rpc.allthatnode.com";
+        String reqUrl = "https://eth-goerli.g.alchemy.com/v2/-s1zkDpkEmnjF4wIk8pLsiJBuxWelYV0";
         final Web3j web3j = Web3j.build(new HttpService(reqUrl));
         web3j.transactionFlowable().subscribe(tx -> {
             System.out.println(tx.getHash());

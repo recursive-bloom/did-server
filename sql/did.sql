@@ -107,6 +107,7 @@ INSERT INTO `sys_config` VALUES ('1', 'monitor_contract_address', '[\"0x6cC0cAd1
 INSERT INTO `sys_config` VALUES ('2', 'monitor_block_height', '	7744226', '监控的区块高度', '2022-09-17 17:11:20', '2022-10-11 08:23:34');
 INSERT INTO `sys_config` VALUES ('3', 'monitor_block_threshold', '128', '区块链的最大块高与监控块高之差小于这个值，则停止同步', '2022-09-17 17:15:18', '2022-09-17 17:15:18');
 INSERT INTO `sys_config` VALUES ('4', 'monitor_event_parse_key', '[{\"0xc157eb3324da08e8457887d9341053619bf3ffa31a17ef836d3e3c1fe725da4a\":\"functionEventParseReverseService\"},{\"0x61010a411bace39b28736dfe49eab03289be1dc889203bb44efcb298cd3558db\":\"functionEventParseNodeService\"},{\"0xb31b9803c41115119bce23fa65fe38195a01d595c17187ec8f03a63293564f8a\":\"functionEventParsepPlatformIncomeService\"},{\"0x3eee8565afad5d48c7b6d6c96918f8d6b851054251f794aff90bc0804a6b3778\":\"functionEventParseUserDividentService\"}]', '方法签名和对应的解析处理类', '2022-09-22 11:01:11', '2022-10-11 08:08:24');
+INSERT INTO `sys_config` VALUES ('5', 'block_req_host', 'https://eth-goerli.g.alchemy.com/v2/-s1zkDpkEmnjF4wIk8pLsiJBuxWelYV0', 'block请求host', '2022-10-12 21:26:21', '2022-10-12 21:26:21');
 
 -- ----------------------------
 -- Table structure for user_divident

@@ -12,10 +12,6 @@ spring:
   redis:
     host: localhost
 
-# json-rpc server config
-block:
-  req:
-    host: https://eth-goerli.g.alchemy.com/v2/-s1zkDpkEmnjF4wIk8pLsiJBuxWelYV0
 
 jsonrpc:
   id: 83

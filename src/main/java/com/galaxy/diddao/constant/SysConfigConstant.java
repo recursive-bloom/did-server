@@ -26,4 +26,9 @@ public interface SysConfigConstant {
      * 方法签名和对应的解析处理类
      */
     String MONITOR_EVENT_PARSE_KEY = "monitor_event_parse_key";
+
+    /**
+     * block 请求host
+     */
+    String BLOCK_REQ_HOST = "block_req_host";
 }

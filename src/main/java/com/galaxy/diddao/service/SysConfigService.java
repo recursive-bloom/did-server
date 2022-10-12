@@ -19,7 +19,7 @@ public interface SysConfigService {
      * @param configKey
      * @return
      */
-    String getCacheValue(String configKey);
+//    String getCacheValue(String configKey);
 
     /**
      * 根据key修改value值

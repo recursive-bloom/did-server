@@ -4,17 +4,14 @@ import cn.hutool.core.lang.Assert;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.galaxy.diddao.constant.RedisCacheKey;
 import com.galaxy.diddao.entity.SysConfig;
 import com.galaxy.diddao.mapper.SysConfigMapper;
 import com.galaxy.diddao.service.SysConfigService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @Author Ant
@@ -43,18 +40,18 @@ public class SysConfigServiceImpl implements SysConfigService {
 
     }
 
-    @Override
-    public String getCacheValue(String configKey) {
-        String redisCacheKey = StringUtils.join(RedisCacheKey.SYS_CONFIG_PREFIX,configKey);
-        final String redisCacheValue = stringRedisTemplate.opsForValue().get(redisCacheKey);
-        if(StringUtils.isNotBlank(redisCacheValue)){
-            return redisCacheValue;
-        }
-
-        final String value = getValue(configKey);
-        stringRedisTemplate.opsForValue().set(redisCacheKey,value,3, TimeUnit.MINUTES);
-        return value;
-    }
+//    @Override
+//    public String getCacheValue(String configKey) {
+//        String redisCacheKey = StringUtils.join(RedisCacheKey.SYS_CONFIG_PREFIX,configKey);
+//        final String redisCacheValue = stringRedisTemplate.opsForValue().get(redisCacheKey);
+//        if(StringUtils.isNotBlank(redisCacheValue)){
+//            return redisCacheValue;
+//        }
+//
+//        final String value = getValue(configKey);
+//        stringRedisTemplate.opsForValue().set(redisCacheKey,value,3, TimeUnit.MINUTES);
+//        return value;
+//    }
 
     @Override
     public void update(String key, String value) {

@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 import org.web3j.protocol.core.methods.response.Log;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -34,6 +35,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 2022/9/17 11:14
  * @Description: 同步event事件并解析数据，写入到mysql数据库
  */
+@ConditionalOnBean(ChainConfig.class)
 @Slf4j
 @Component
 public class SyncEventTask implements CommandLineRunner {
@@ -64,14 +66,14 @@ public class SyncEventTask implements CommandLineRunner {
                     .map(Integer::parseInt).orElse(0);
 
             // step2 获取设置的区块阈值
-            Integer blockHeightThreshold = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MONITOR_BLOCK_THRESHOLD_KEY))
+            Integer blockHeightThreshold = Optional.ofNullable(sysConfigService.getValue(SysConfigConstant.MONITOR_BLOCK_THRESHOLD_KEY))
                     .map(Integer::parseInt).orElse(0);
 
             // step3 获取区块链目前最大区块高度
             Integer curMaxBlockHeight = obtainCurMaxBlockHeightForRemote();
 
             // step4 获取监控的目标地址
-            List<String> monitorContractAddressList = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MONITOR_CONTRACT_ADDRESS_KEY))
+            List<String> monitorContractAddressList = Optional.ofNullable(sysConfigService.getValue(SysConfigConstant.MONITOR_CONTRACT_ADDRESS_KEY))
                     .map(String::toLowerCase)
                     .map(str -> JSONUtil.toList(str, String.class))
                     .orElse(null);
@@ -196,7 +198,7 @@ public class SyncEventTask implements CommandLineRunner {
             return null;
         }
 
-        List<Map<String, String>> mapList = Optional.ofNullable(sysConfigService.getCacheValue(SysConfigConstant.MONITOR_EVENT_PARSE_KEY))
+        List<Map<String, String>> mapList = Optional.ofNullable(sysConfigService.getValue(SysConfigConstant.MONITOR_EVENT_PARSE_KEY))
                 .map(str -> JSONUtil.toBean(str, new TypeReference<List<Map<String, String>>>() {
                 }, true)).orElse(null);
 

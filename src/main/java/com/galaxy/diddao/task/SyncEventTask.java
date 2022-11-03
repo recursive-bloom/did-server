@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * @Description: 同步event事件并解析数据，写入到mysql数据库
  */
 @Slf4j
-@Component
+//@Component
 public class SyncEventTask implements CommandLineRunner {
 
 

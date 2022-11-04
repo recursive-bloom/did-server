@@ -15,10 +15,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.intellij.lang.annotations.JdkConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.web3j.abi.FunctionReturnDecoder;
+import org.web3j.abi.TypeDecoder;
+import org.web3j.abi.TypeReference;
+import org.web3j.abi.datatypes.Array;
+import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.utils.Numeric;
 
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * @Author Ant
@@ -50,7 +55,13 @@ public class MetadataServiceImpl implements MetadataService {
 
         MetadataResp resp = new MetadataResp();
         resp.setName(metadataName);
-        resp.setImage(Numeric.toHexStringNoPrefix(didNodeKvDb.getValue()));
+
+        final String encodeStr = Numeric.toHexStringNoPrefix(didNodeKvDb.getValue());
+        final List<Type> typeList = FunctionReturnDecoder.decode(encodeStr, Arrays.asList(new TypeReference<Type>() {
+        }));
+        final String image = typeList.get(0).getValue().toString();
+
+        resp.setImage(image);
         return resp;
     }
 

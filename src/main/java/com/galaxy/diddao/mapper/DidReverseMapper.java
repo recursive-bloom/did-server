@@ -1,7 +1,7 @@
 package com.galaxy.diddao.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.galaxy.diddao.entity.ReverseRecord;
+import com.galaxy.diddao.entity.DidReverse;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  * @Description:
  */
 @Repository
-public interface ReverseRecordMapper extends BaseMapper<ReverseRecord> {
+public interface DidReverseMapper extends BaseMapper<DidReverse> {
 }

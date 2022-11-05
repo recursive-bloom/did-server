@@ -16,9 +16,8 @@ import org.intellij.lang.annotations.JdkConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.web3j.abi.FunctionReturnDecoder;
-import org.web3j.abi.TypeDecoder;
 import org.web3j.abi.TypeReference;
-import org.web3j.abi.datatypes.Array;
+import org.web3j.abi.Utils;
 import org.web3j.abi.datatypes.Type;
 import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.utils.Numeric;
@@ -57,8 +56,8 @@ public class MetadataServiceImpl implements MetadataService {
         resp.setName(metadataName);
 
         final String encodeStr = Numeric.toHexStringNoPrefix(didNodeKvDb.getValue());
-        final List<Type> typeList = FunctionReturnDecoder.decode(encodeStr, Arrays.asList(new TypeReference<Type>() {
-        }));
+        final List<Type> typeList = FunctionReturnDecoder.decode(encodeStr, Utils.convert( Arrays.asList(new TypeReference<Utf8String>() {
+        })));
         final String image = typeList.get(0).getValue().toString();
 
         resp.setImage(image);

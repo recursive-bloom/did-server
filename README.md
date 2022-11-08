@@ -59,6 +59,11 @@ truncate recommender;
 truncate user_divident;
 truncate did_node_kvdb;
 
+
+### 应用启动命令
+nohup java -jar -Dspring.profiles.active=prod -Xms1g -Xmx1g -XX:+UseConcMarkSweepGC -XX:+UseParNewGC   /root/apps/web3j-server/diddao-0.0.1-SNAPSHOT.jar  &
+
+
 ```
 
 ```json
@@ -68,7 +73,6 @@ truncate did_node_kvdb;
 ```
 didDao服务启动命令
 ```aidl
-nohup java -jar -Dspring.profiles.active=prod -Xms1g -Xmx1g -XX:+UseConcMarkSweepGC -XX:+UseParNewGC   diddao-0.0.1-SNAPSHOT.jar > detail.log 2>&1 &
 ```
 
 web3j学习demo

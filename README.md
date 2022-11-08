@@ -49,6 +49,16 @@ curl https://ethereum-ropsten-rpc.allthatnode.com --request POST --header "Conte
 
 curl https://ethereum-ropsten-rpc.allthatnode.com --request POST --header "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_getTransactionReceipt","params":["0x9dbd8f031998949f0be79b436e1e8fbf6f6f9af4b1a84b31fe1d96a802abbdb7"],"id":1}'
 
+### 清空表数据
+truncate did_node;
+truncate field_token_transfer;
+truncate did_reverse;
+truncate platform_income;
+truncate field_token;
+truncate recommender;
+truncate user_divident;
+truncate did_node_kvdb;
+
 ```
 
 ```json

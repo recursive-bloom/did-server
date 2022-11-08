@@ -23,8 +23,8 @@ public class DidNodeController {
     @Autowired
     private DidNodeService didNodeService;
 
-    @GetMapping("/getDidNodeListByAddress")
-    public R<List<DidNodeResp>> getDidNodeListByAddress(@RequestParam String owner) {
+    @GetMapping("/getDidNodeListByAddress/{owner}")
+    public R<List<DidNodeResp>> getDidNodeListByAddress(@PathVariable String owner) {
         return R.ok(didNodeService.getDidNodeListByAddress(owner));
     }
 
